@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "playground"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.7, <3.10"
+pino = {git = "https://github.com/7cm-diameter/pino", branch = "main"}
+amas = {git = "https://github.com/7cm-diameter/amas", branch = "main"}
+comprex = {git = "https://github.com/7cm-diameter/comprex", branch = "main"}
+opencv-python = "^4.5.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+python-language-server = {extras = ["all"], version = "^0.36.2"}
+isort = "^5.8.0"
+yapf = "^0.31.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

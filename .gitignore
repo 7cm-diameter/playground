@@ -1,0 +1,10 @@
+*.egg-info
+/poetry.lock
+/.venv
+__pycache__/
+*.yaml
+*.csv
+!sample.yaml
+!test*.yaml
+/*/data
+/.vim
