@@ -28,17 +28,15 @@ async def stimulate(agent: Agent, ino: Arduino):
     log = timelog()
     try:
         while agent.working():
-            for _ in range(5):
+            for _ in range(100):
                 await agent.sleep(2.)
                 log()
                 ino.digital_write(LED, HIGH)
                 agent.send_to(FILMTAKER, HIGH)
-                agent.send_to(RECORDER, HIGH)
                 await agent.sleep(0.5)
                 log()
                 ino.digital_write(LED, LOW)
                 agent.send_to(FILMTAKER, LOW)
-                agent.send_to(RECORDER, LOW)
             break
         agent.finish()
         agent.send_to(OBSERVER, NEND)
