@@ -134,7 +134,7 @@ if __name__ == '__main__':
     from amas.connection import Register
     from amas.env import Environment
     from comprex.agent import Observer, _self_terminate
-    from comprex.util import get_current_file_abspath, namefile
+    from comprex.util import get_current_file_abspath
     from pino.ino import OUTPUT, SSINPUT_PULLUP, Comport
 
     com = Comport() \
