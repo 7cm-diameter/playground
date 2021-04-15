@@ -82,8 +82,14 @@ class FilmTaker(Agent):
         return self._led
 
 
-async def film(agent: FilmTaker, camid: int):
+async def film(agent: FilmTaker, camid: int, filename: str):
     cap = cv2.VideoCapture(camid)
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    video = cv2.VideoWriter(filename, fourcc, fps, (width, height))
+
     try:
         while agent.working():
             await agent.sleep(0.025)
@@ -96,6 +102,7 @@ async def film(agent: FilmTaker, camid: int):
                 cv2.circle(frame, (10, 10), 10, (0, 0, 255), thickness=-1)
 
             cv2.imshow(f"Camera: {camid}", frame)
+            video.write(frame)
             if cv2.waitKey(1) % 0xFF == ord("q"):
                 break
 
@@ -105,6 +112,7 @@ async def film(agent: FilmTaker, camid: int):
         agent.send_to(OBSERVER, ABEND)
 
     cap.release()
+    video.release()
     cv2.destroyAllWindows()
     return None
 
@@ -120,9 +128,13 @@ async def check_pin_state(agent: FilmTaker):
 
 
 if __name__ == '__main__':
+    from os import mkdir
+    from os.path import exists, join
+
     from amas.connection import Register
     from amas.env import Environment
     from comprex.agent import Observer, _self_terminate
+    from comprex.util import get_current_file_abspath, namefile
     from pino.ino import OUTPUT, SSINPUT_PULLUP, Comport
 
     com = Comport() \
@@ -133,6 +145,11 @@ if __name__ == '__main__':
     ino = Arduino(com)
     ino.set_pinmode(12, OUTPUT)
     ino.set_pinmode(7, SSINPUT_PULLUP)
+
+    data_dir = join(get_current_file_abspath(__file__), "data")
+    if not exists(data_dir):
+        mkdir(data_dir)
+    filename = join(data_dir, "hoge.MP4")
 
     stimulator = Agent(STIMULATOR) \
         .assign_task(stimulate, ino=ino) \
@@ -147,7 +164,7 @@ if __name__ == '__main__':
         .assign_task(_self_terminate)
 
     filmtaker = FilmTaker(FILMTAKER) \
-        .assign_task(film, camid=0) \
+        .assign_task(film, camid=0, filename=filename) \
         .assign_task(check_pin_state) \
         .assign_task(_self_terminate)
 
