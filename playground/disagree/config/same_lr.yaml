@@ -1,0 +1,8 @@
+number-of-arms:           2
+number-of-learners:       100
+weight:                   2.
+range-initial-prediction: [-1, 1]
+range-learning-rate:      [0.13, 0.13]
+reward-probabilities:     [[0.2, 0.8], [0.2, 0.2], [0.8, 0.2], [0.5, 0.5]]
+number-of-trial:          [500, 500, 500, 500]
+filename:                 "same_lr.csv"
