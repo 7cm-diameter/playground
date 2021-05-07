@@ -105,15 +105,15 @@ class NArmBandit(object):
 
 
 def to_drow(probs: List[float], preds: NDArray[1, float],
-            disagreements: NDArray[1, float]) -> Tuple:
-    return tuple(chain(probs, preds, disagreements))
+            disagreements: NDArray[1, float], reward: List[float]) -> Tuple:
+    return tuple(chain(probs, preds, disagreements, reward))
 
 
 def colnames(narms: int) -> List[str]:
     probs = [f"prob_{i}" for i in range(narms)]
     preds = [f"pred_{i}" for i in range(narms)]
     disagreements = [f"disagreement_{i}" for i in range(narms)]
-    return list(chain(probs, preds, disagreements))
+    return list(chain(probs, preds, disagreements, ["reward"]))
 
 
 def get_current_dir(relpath: str) -> Path:
@@ -161,7 +161,8 @@ if __name__ == '__main__':
             agent.update(rewards, action)
             if t % 10 == 0:
                 print(f"{t} - preds: {preds} - curiosity: {disagreements}")
-            results.append(to_drow(prob, preds, disagreements))
+            reward = np.max(action * rewards)
+            results.append(to_drow(prob, preds, disagreements, [reward]))
 
     output_data = DataFrame(results, columns=colnames(narms))
     data_dir = create_data_dir(__file__, "disagree")
