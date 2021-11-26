@@ -343,6 +343,11 @@ scatter!(result.action .- 1,
 
 ---
 
+![](https://github.com/7cm-diameter/playground/blob/main/playground/turing-ql/figs/simulation-result.png?raw=true)
+まあ大体こんなもんだよね
+
+---
+
 # Q-learningを実装する: Turing.jlで書いてみる
 
 `@model Model() = begin ~ end`でモデルを定義する
@@ -385,6 +390,15 @@ chains = sample(QLearningModel(actions, rewards, 2), NUTS(), 1000)
 plot(chains)
 ```
 
+---
+
+MCMCが終わると結果が表示される
+![](https://github.com/7cm-diameter/playground/blob/main/playground/turing-ql/figs/mcmc-result.png?raw=true)
+
+---
+
+`plot(MCMCChains)`でトレースプロットが表示される
+![](https://github.com/7cm-diameter/playground/blob/main/playground/turing-ql/figs/single-chain.png?raw=true)
 
 ---
 
@@ -402,7 +416,10 @@ plot(chains)
 
 環境変数の`JULIA_NUM_THREADS`以上のチェイン数は並立化されない
 あらかじめ`JULIA_NUM_THREADS`の値を4以上にしておくと良い
-`plot`すると複数チェインの結果を重ねたものが表示される
+
+---
+
+![](https://github.com/7cm-diameter/playground/blob/main/playground/turing-ql/figs/four-chains.png?raw=true)
 
 ---
 
