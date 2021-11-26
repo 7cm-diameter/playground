@@ -51,11 +51,12 @@ k = length(bandit.p)
 agent = QLearningAgent(0.05, 2., k)
 result = run(agent, bandit, 500)
 
-fig = plot(result.x1)
-fig = plot!(result.x2)
-fig = scatter!(result.action .- 1,
+plot(result.x1, label="Q1")
+plot!(result.x2, label="Q2")
+scatter!(result.action .- 1,
          markersize=1,
-         markershape=:vline)
+         markershape=:vline,
+         label="Response")
 
 
 @model QLearningModel(actions::Array{Real, 1}, rewards::Array{Real, 1}, k::Int64) = begin
