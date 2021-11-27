@@ -1,4 +1,4 @@
-# 簡単にturing.jlの良さを紹介する
+# 簡単にturing.jlを紹介する
 
 ---
 
@@ -51,7 +51,6 @@ end
 # Turing.jlの強み
 
 + Infinite GMMが簡単に実装できるように離散パラメータを容易に扱える
-  + HMMも簡単に書けるので行動推定とかのクラスタリングには向いてそう
 + `Julia`の構文が使えるから`stan`のように言語の勉強が不要
 + 上の理由でシミュレーションと`turing.jl`のモデルでコードを共有できる
 
@@ -60,12 +59,10 @@ end
 # Turing.jlの弱み
 
 + コミュニティが`stan`などと比べて小さい
-+ サンプルが機械学習ばかりで統計モデルとかが少なめ
-+ 生物・心理学寄りのモデルだとexampleがあまりない
++ サンプルが機械学習寄りが多く統計モデルが少なめ
 + エラーメッセージが親切ではない(コミュニティが小さいからググっても出てこないことが多い)
 
-とはいったものの圧倒的な書きやすさのおかげ大きな問題にはならない気もする
-ぶっちゃけexampleもドキュメントもなくても結構自力でどうにかなる
+とはいえ書きやすいので上の問題はあまり大きくはない気もする
 
 → とりあえず`turing.jl`やってみろ
 
@@ -73,7 +70,7 @@ end
 
 # 実際にQ-learningを実装してみる
 
-1. 簡単に`julia`のおさらい
+1. 最低限の`julia`の知識のおさらい
 2. 念の為Q-learningの簡単な説明
 3. シミュレーション用プログラムの解説
 4. `Turing.jl`による実装
@@ -86,6 +83,10 @@ end
 
 ## 関数宣言
 
++ `function ~ end`で関数宣言ができる
++ 引数の型は`::Type`で指定できる
++ 型宣言をしない場合はジェネリクスとなる
+
 ```julia
 function f(x, y)
     x + y
@@ -96,13 +97,11 @@ function f(x::Real, y::Real)
 end
 ```
 
-`function ~ end`で関数宣言ができる
-引数の型は`::Type`で指定できる
-
 ---
 
 ## 多重ディスパッチ(Multiple dispatch)
-`Julia`では同名の関数でも引数の型が異なれば異なる実装が可能
++ `Julia`では同名の関数でも引数の型が異なれば異なる実装が可能
++ 複数の型によって呼び出されるメソッドが決定される
 
 ```julia
 function add(x::Number, y::Number)
@@ -114,17 +113,18 @@ function add(x::String, y::String)
 end
 ```
 
-ちなみに`Float64 <: Number`のため`add(Number, Number)`は`Number`のサブタイプにも適用可能
-同様に`Int64 <: Float64`なので`add(Float64, Int64)`も可能
+上の例にはないが`add(x::String, y::Number)`も可能なのが多重ディスパッチの特徴
 
 ---
 
 ## 関数呼び出し
 当たり前だが`f(args)`で関数呼び出しが可能
+
 ```julia
 add(1, 2)
 ```
 
+### ブロードキャスト
 `.`を使用することで引数がスカラーであっても配列に適用可能になる
 ```julia
 add([1, 2, 3], 2) # Error
@@ -140,7 +140,9 @@ add.([1, 2, 3], 2)
 ---
 
 ## 構造体
-`struct ~ end`で構造体を定義できる
++ `struct ~ end`で構造体を定義できる
++ フィールドへのアクセスは`instance.fieldname`で可能
+
 ```julia
 struct Hoge
     foo
@@ -152,11 +154,11 @@ hoge.foo
 hoge.bar
 ```
 
-構造体のフィールドへのアクセスは`instance.fieldname`で可能
-
 ---
 
-`::Type`でフィールドの型を指定することができる
++ `::Type`でフィールドの型を指定することができる
++ 関数と同様に型宣言をしない場合はジェネリクス
+
 ```julia
 struct HogeWithType
     foo::Real
@@ -164,7 +166,7 @@ struct HogeWithType
 end
 ```
 
-構造体はデフォルトでイミュータブルなのでミュータブルしたい場合は`mutable`を使用する
++ 構造体はデフォルトでイミュータブルなのでミュータブルしたい場合は`mutable`を使用する
 
 ```julia
 mutable struct MutableHoge
