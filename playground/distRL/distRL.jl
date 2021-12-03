@@ -4,11 +4,10 @@ using Distributions, DataFrames, Plots
 mutable struct DistributionalQAgent
     αp::Array{Real, 1}
     αn::Array{Real, 1}
-    β::Real
     q::Array{Real, 1}
-    function DistributionalQAgent(αp::Array{Real, 1}, αn::Array{Real, 1}, β::Real , n::Real)
+    function DistributionalQAgent(αp::Array{Real, 1}, αn::Array{Real, 1}, n::Real)
         q = Array{Real, 1}(zeros(n))
-        new(αp, αn, β, q)
+        new(αp, αn, q)
     end
 end
 
@@ -47,7 +46,7 @@ WARMUP = 100
 
 αp = Array{Real, 1}(generate_lrs(0.01, 0.1, 50))
 αn = reverse(αp)
-agent = DistributionalQAgent(αp, αn, 1., N)
+agent = DistributionalQAgent(αp, αn, N)
 env = Environment([0.5, 0.5], [1., 2.])
 
 
